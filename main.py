@@ -1,9 +1,10 @@
 from fastapi import FastAPI, HTTPException
 from pydantic import BaseModel
-from sqlalchemy import create_engine, select
+from sqlalchemy import create_engine, select, update
 from sqlalchemy.orm import Session
 from tables import Post
 from datetime import date
+from typing import Optional
 
 app = FastAPI()
 
@@ -12,6 +13,8 @@ class Item(BaseModel):
     title: str
     content: str
 
+class EditItem(BaseModel):
+    pass
 # REPLACE WITH YOUR ACTUAL USER, SERVER AND DB INFO
 engine = create_engine('HERE')
 
@@ -48,3 +51,10 @@ async def show_posts(skip: int = 0, limit: int = 10):
             data.append(post)
 
         return data
+    
+@app.put("/edit_post")
+async def edit_post(data: dict):
+    with Session(engine) as session:
+        post = session.get(Post, data["id"])
+        setattr(post, data["attribute"], data["edit"])
+        session.commit()
