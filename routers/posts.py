@@ -12,8 +12,8 @@ async def r_create_post(item: Item):
     with get_session() as session:
         create_post(item, session)
     
-@router.delete("/delete-post")
-async def r_delete_post(id:int):
+@router.delete("/delete-post/")
+async def r_delete_post(id: int):
     with get_session() as session:
         delete_post(id, session)
             
